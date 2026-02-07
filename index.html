@@ -2,247 +2,170 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Orçamento Oficina Mecânica</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- BOOTSTRAP -->
+<title>Orçamento Mecânica</title>
+
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-<!-- jsPDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<!-- jsPDF AutoTable -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
 
 </head>
 <body class="bg-light">
 
-<div class="container mt-4 bg-white p-4 rounded shadow">
+<div class="container py-3">
 
-<h2 class="text-center mb-4">🚗 Sistema de Orçamento Mecânico</h2>
+<h4 class="text-center mb-3">📱 Orçamento Mecânica</h4>
 
-<div class="row">
-  <div class="col-md-4">
-    <label>Nome da oficina</label>
-    <input id="oficina" class="form-control" value="Rio Pneus">
-  </div>
-  <div class="col-md-4">
-    <label>Cliente</label>
-    <input id="cliente" class="form-control">
-  </div>
-  <div class="col-md-4">
-    <label>Veículo</label>
-    <input id="veiculo" class="form-control" placeholder="Ex: Gol 1.6 2015">
-  </div>
+<div class="card p-3 mb-3">
+    <input id="oficina" class="form-control mb-2" value="Minha Oficina" placeholder="Nome da oficina">
+    <input id="cliente" class="form-control mb-2" placeholder="Nome do cliente">
+    <input id="veiculo" class="form-control mb-2" placeholder="Modelo do veículo">
 </div>
 
-<hr>
-
-<!-- <div class="row">
-  <div class="col-md-4">
-    <label>Custo mensal da oficina (R$)</label>
-    <input type="number" id="custoMensal" class="form-control">
-  </div>
-  <div class="col-md-4">
-    <label>Horas trabalhadas no mês</label>
-    <input type="number" id="horasMes" class="form-control">
-  </div>
-  <div class="col-md-4">
-    <label>Lucro sobre mão de obra (%)</label>
-    <input type="number" id="lucro" class="form-control" value="40">
-  </div>
-</div>
-
-<hr> -->
-
-<h5>Adicionar serviço</h5>
-
-<div class="row">
-  <div class="col-md-4">
-    <label>Serviço</label>
-    <select id="servico" class="form-select">
-      <option value="0.5">Troca de óleo (0,5h)</option>
-      <option value="1">Pastilhas de freio (1h)</option>
-      <option value="2">Amortecedores (2h)</option>
-      <option value="3">Correia dentada (3h)</option>
-      <option value="6">Embreagem (6h)</option>
-      <option value="2">Limpeza de bicos (2h)</option>
-      <option value="4">Revisão completa (4h)</option>
-      <option value="1">Troca de bateria (1h)</option>
+<div class="card p-3 mb-3">
+    <select id="servico" class="form-select mb-2">
+        <option>Troca de óleo</option>
+        <option>Alinhamento</option>
+        <option>Balanceamento</option>
+        <option>Troca de freios</option>
+        <option>Suspensão</option>
+        <option>Embreagem</option>
+        <option>Revisão geral</option>
+        <option>Diagnóstico eletrônico</option>
     </select>
-  </div>
 
-  <div class="col-md-2">
-    <label>Peça (R$)</label>
-    <input type="number" id="peca" class="form-control" value="0">
-  </div>
+    <input id="mao" type="number" class="form-control mb-2" placeholder="Mão de obra (R$)">
+    <input id="peca" type="number" class="form-control mb-2" placeholder="Peça (R$)">
 
-  <div class="col-md-2">
-    <label>Lucro peça (%)</label>
-    <input type="number" id="lucroPeca" class="form-control" value="30">
-  </div>
-
-  <div class="col-md-2">
-    <label>Materiais (R$)</label>
-    <input type="number" id="materiais" class="form-control" value="0">
-  </div>
-
-  <div class="col-md-2 d-flex align-items-end">
-    <button onclick="adicionarServico()" class="btn btn-success w-100">Adicionar</button>
-  </div>
+    <button class="btn btn-primary w-100" onclick="adicionar()">Adicionar serviço</button>
 </div>
 
-<hr>
-
+<div class="table-responsive mb-3">
 <table class="table table-bordered" id="tabela">
 <thead class="table-dark">
 <tr>
 <th>Serviço</th>
-<th>Mão de obra (R$)</th>
-<th>Peça (R$)</th>
-<th>Total (R$)</th>
+<th>Mão</th>
+<th>Peça</th>
+<th>Total</th>
 </tr>
 </thead>
 <tbody></tbody>
 </table>
-
-<div class="row">
-  <div class="col-md-4">
-    <label>Desconto (%)</label>
-    <input type="number" id="desconto" class="form-control" value="0">
-  </div>
-  <div class="col-md-8 d-flex align-items-end">
-    <button onclick="finalizar()" class="btn btn-primary w-100">Calcular total</button>
-  </div>
 </div>
 
-<div class="alert alert-success mt-3" id="resultado"></div>
+<div class="card p-3 mb-3">
+<input id="desconto" type="number" class="form-control mb-2" placeholder="Desconto (%)">
+<button class="btn btn-success w-100" onclick="calcular()">Calcular total</button>
+</div>
 
-<button onclick="gerarPDF()" class="btn btn-danger w-100 mt-2">Gerar PDF</button>
+<div id="resultado" class="alert alert-info text-center"></div>
+
+<button class="btn btn-danger w-100" onclick="gerarPDF()">📄 Gerar PDF</button>
 
 </div>
 
 <script>
 let totalGeral = 0;
 
-function adicionarServico(){
-    let custoMensal = 5000 // parseFloat(custoMensal.value);
-    let horasMes = 178 // parseFloat(horasMes.value);
-    let lucro = 40 // parseFloat(lucro.value)/100;
-
-    let tempo = parseFloat(servico.value);
-    let nomeServico = servico.options[servico.selectedIndex].text;
-
-    let pecaVal = parseFloat(peca.value);
-    let lucroP = parseFloat(lucroPeca.value)/100;
-    let materiaisVal = parseFloat(materiais.value);
-
-    let horaTecnica = (custoMensal/horasMes)*(1+lucro);
-    let maoDeObra = horaTecnica * tempo;
-    let precoPeca = pecaVal * (1+lucroP);
-    let total = maoDeObra + precoPeca + materiaisVal;
-
-    let tbody = document.querySelector("#tabela tbody");
-    let row = tbody.insertRow();
-    row.insertCell(0).innerText = nomeServico;
-    row.insertCell(1).innerText = maoDeObra.toFixed(2);
-    row.insertCell(2).innerText = precoPeca.toFixed(2);
-    row.insertCell(3).innerText = total.toFixed(2);
+function adicionar(){
+    let servico = document.getElementById("servico").value;
+    let mao = parseFloat(document.getElementById("mao").value || 0);
+    let peca = parseFloat(document.getElementById("peca").value || 0);
+    let total = mao + peca;
 
     totalGeral += total;
+
+    let linha = `
+        <tr>
+            <td>${servico}</td>
+            <td>${mao.toFixed(2)}</td>
+            <td>${peca.toFixed(2)}</td>
+            <td>${total.toFixed(2)}</td>
+        </tr>
+    `;
+
+    document.querySelector("#tabela tbody").innerHTML += linha;
+
+    document.getElementById("mao").value = "";
+    document.getElementById("peca").value = "";
 }
 
-function finalizar(){
-    let desc = parseFloat(desconto.value)/100;
-    let final = totalGeral * (1-desc);
+function calcular(){
+    let desconto = parseFloat(document.getElementById("desconto").value || 0);
+    let valorDesconto = totalGeral * (desconto/100);
+    let final = totalGeral - valorDesconto;
 
-    resultado.innerHTML =
-      "<b>Total bruto:</b> R$ " + totalGeral.toFixed(2) + "<br>" +
-      "<b>Desconto:</b> " + (desc*100) + "%<br>" +
-      "<b>Total final:</b> R$ " + final.toFixed(2);
+    document.getElementById("resultado").innerText =
+        "Total bruto: R$ " + totalGeral.toFixed(2) + "\n" +
+        "Desconto: " + desconto + "%\n" +
+        "Total final: R$ " + final.toFixed(2);
 }
 
 function gerarPDF(){
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
-    // ===== DATA E HORA ATUAL =====
     let agora = new Date();
     let data = agora.toLocaleDateString("pt-BR");
     let hora = agora.toLocaleTimeString("pt-BR");
 
-    // ===== DADOS PRINCIPAIS =====
-    let oficinaNome = oficina.value;
-    let clienteNome = cliente.value;
-    let veiculoNome = veiculo.value;
+    let oficina = document.getElementById("oficina").value;
+    let cliente = document.getElementById("cliente").value;
+    let veiculo = document.getElementById("veiculo").value;
 
-    // ===== TABELA DE DADOS (OFICINA / CLIENTE / VEÍCULO) =====
+    // CABEÇALHO
+    doc.setFontSize(16);
+    doc.text(oficina.toUpperCase(), 105, 10, {align:"center"});
+    doc.setFontSize(12);
+    doc.text("ORÇAMENTO", 105, 18, {align:"center"});
+
+    // TABELA DADOS
     doc.autoTable({
-        head: [["Campo", "Informação"]],
-        body: [
-            ["Oficina", oficinaNome],
-            ["Cliente", clienteNome],
-            ["Veículo", veiculoNome]
-        ],
-        startY: 10
+        startY: 25,
+        head:[["Campo","Informação"]],
+        body:[
+            ["Cliente",cliente],
+            ["Veículo",veiculo]
+        ]
     });
 
-    // ===== TABELA DE SERVIÇOS =====
-    let dadosServicos = [];
-    let rows = document.querySelectorAll("#tabela tbody tr");
-
-    rows.forEach(r => {
-        let cols = r.querySelectorAll("td");
-        dadosServicos.push([
-            cols[0].innerText,
-            "R$ " + cols[1].innerText,
-            "R$ " + cols[2].innerText,
-            "R$ " + cols[3].innerText
-        ]);
+    // SERVIÇOS
+    let dados = [];
+    document.querySelectorAll("#tabela tbody tr").forEach(tr=>{
+        let td = tr.querySelectorAll("td");
+        dados.push([td[0].innerText,"R$ "+td[1].innerText,"R$ "+td[2].innerText,"R$ "+td[3].innerText]);
     });
-
-    let posicaoServicos = doc.lastAutoTable.finalY + 10;
 
     doc.autoTable({
-        head: [["Serviço", "Mão de obra", "Peça", "Total"]],
-        body: dadosServicos,
-        startY: posicaoServicos
+        startY: doc.lastAutoTable.finalY + 10,
+        head:[["Serviço","Mão de obra","Peça","Total"]],
+        body:dados
     });
 
-    // ===== TABELA DE RESUMO =====
-    let texto = resultado.innerText.split("\n");
-
-    let totalBruto = texto[0].replace("Total bruto: ", "");
-    let desconto = texto[1].replace("Desconto: ", "");
-    let totalFinal = texto[2].replace("Total final: ", "");
-
-    let resumoTabela = [
-        ["Total bruto", totalBruto],
-        ["Desconto", desconto],
-        ["Total final", totalFinal]
+    // RESUMO
+    let texto = document.getElementById("resultado").innerText.split("\n");
+    let resumo = [
+        ["Total bruto", texto[0].replace("Total bruto: ","")],
+        ["Desconto", texto[1].replace("Desconto: ","")],
+        ["Total final", texto[2].replace("Total final: ","")]
     ];
 
-    let posicaoResumo = doc.lastAutoTable.finalY + 10;
-
     doc.autoTable({
-        head: [["Resumo", "Valor"]],
-        body: resumoTabela,
-        startY: posicaoResumo
+        startY: doc.lastAutoTable.finalY + 10,
+        head:[["Resumo","Valor"]],
+        body:resumo
     });
 
-    // ===== RODAPÉ COM DATA E HORA =====
-    let pageHeight = doc.internal.pageSize.height;
+    // RODAPÉ
+    let h = doc.internal.pageSize.height;
     doc.setFontSize(10);
-    doc.text(
-        "Orçamento gerado em: " + data + " às " + hora,
-        14,
-        pageHeight - 10
-    );
+    doc.text("Gerado em: "+data+" às "+hora, 14, h-10);
 
     doc.save("orcamento.pdf");
 }
-
-
-
-
 </script>
 
 </body>
